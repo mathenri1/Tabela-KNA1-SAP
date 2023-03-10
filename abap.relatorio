@@ -1,0 +1,59 @@
+REPORT ZRELMH .
+
+*--- DECLARAÇÃO ----*
+
+*       Tabela interna p/ guardar os dados
+DATA:   lt_kna1 TYPE TABLE OF kna1,
+
+*       Estrutura p/ pegar os dados da tabela interna e fazer o
+*       tratamento de dados
+        ls_kna1 TYPE kna1,
+
+*       Outra estrutura, após finalizar o tratamento dos dados
+        ls_kna1_final TYPE kna1,
+
+
+*       Tabela interna para apresentar os dados
+        lt_kna1_final TYPE TABLE OF kna1.
+
+
+*--- Seleção dos dados
+SELECT *
+    from kna1
+    into TABLE lt_kna1.
+
+*--- Leitura do tratamento dos dados
+*LOOP na tabela interna que já dei Select e passo para uma estrutura ls_
+ LOOP AT lt_kna1 INTO ls_kna1.
+
+
+  ls_kna1_final-kunnr = ls_kna1-kunnr.
+  ls_kna1_final-land1 = ls_kna1-land1.
+  ls_kna1_final-name1 = ls_kna1-name1.
+  ls_kna1_final-name2 = ls_kna1-name2.
+  ls_kna1_final-ort01 = ls_kna1-ort01.
+  ls_kna1_final-pstlz = ls_kna1-pstlz.
+  ls_kna1_final-regio = ls_kna1-regio.
+  ls_kna1_final-sortl = ls_kna1-sortl.
+  ls_kna1_final-stras = ls_kna1-stras.
+  ls_kna1_final-telfx = ls_kna1-telfx.
+  ls_kna1_final-xcpdk = ls_kna1-xcpdk.
+  ls_kna1_final-adrnr = ls_kna1-adrnr.
+  ls_kna1_final-mcod1 = ls_kna1-mcod1.
+  ls_kna1_final-mcod2 = ls_kna1-mcod2.
+
+* Pegar os dados da estrutura final e passar para a tabela interna final
+  APPEND ls_kna1_final to lt_kna1_final.
+
+ENDLOOP.
+
+*--- Apresentar os dados na tela
+
+CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
+ EXPORTING
+
+   I_CALLBACK_PROGRAM                = 'SY-REPID'
+   I_STRUCTURE_NAME                  = 'KNA1'
+
+  TABLES
+    T_OUTTAB                         = lt_kna1_final.
